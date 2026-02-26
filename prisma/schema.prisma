@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  //output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(255)
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  permissions Permission[]
+  users       User[]
+}
+
+model Permission {
+  id        Int      @id @default(autoincrement())
+  resource  Resource
+  actions   Json     @default("[]") // Action[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  roles     Role[]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    Int      @default(1) @map("role_id")
+  name      String   @db.VarChar(255)
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  tasks     Task[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int      @map("user_id")
+  name        String   @db.VarChar(255)
+  description String   @db.Text
+  status      Status
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+}
+
+enum Resource {
+  USER
+  TASK
+}
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  DONE
+}
+
+enum Action {
+  CREATE
+  READ
+  UPDATE
+  DELETE
+
+  SHOW
+}
