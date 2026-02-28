@@ -15,7 +15,7 @@ datasource db {
 // role : ADMIN
 // permission : [{"resource": "users", "actions": ["read", "create", "edit", "delete"]}, {"resource": "tasks", "actions": ["read", "create", "edit", "delete"]}]
 
-// role : USER, 
+// role : USER, EDITOR, ...
 // permission : [{"resource": "users", "actions": ["read"]}, {"resource": "tasks", "actions": ["read", "create", "edit"]}]
 
 model Role {
